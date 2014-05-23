@@ -1,0 +1,4 @@
+HCC=$(TUP_CWD)/hcc
+export HOME
+!ghc = |> ^o LINK %o^ ghc -O2 -o %o %f |>
+!ghcc = |> ^o GHC %B.o^ ghc -O2 -c $(GFLAGS) %f |> %B.hi %B.o
