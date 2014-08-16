@@ -10,7 +10,7 @@
 import sys, os
 import re
 
-re_import = re.compile('^import +(?:qualified +)?([\w.]+)')
+re_import = re.compile(r'^import +(?:qualified +)?([\w\.]+)')
 
 sources = sys.argv[1:]
 deps = {src : set() for src in sources}
@@ -21,13 +21,17 @@ for src in sources:
         for line in file:
             if re_import.match(line):
                 dep = re_import.match(line).group(1)
-                if dep + '.hs' in sources:
+                dep = dep.replace('.', '/')
+                # if dep + '.hs' in sources:
+                if os.path.exists(dep + '.hs'):
                     deps[src].add(dep)
 
 # Topological sort, by depth first search
 visited = set()
 def loop(src):
     visited.add(src)
+    if src not in deps:
+        return
     for dep in deps[src]:
         if dep + '.hs' not in visited:
             loop(dep + '.hs')
