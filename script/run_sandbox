@@ -1,0 +1,9 @@
+#!/bin/bash
+ROOT=$(dirname $0)
+BOX=$(cd ${ROOT} && cabal exec bash -- -c set | grep GHC_PACKAGE_PATH)
+
+if ! [ $# -gt 0 ]; then
+    echo "Usage: $0 <command>"
+fi
+
+env ${BOX} "$@"
