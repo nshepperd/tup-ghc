@@ -1,9 +1,11 @@
 #!/bin/bash
-ROOT=$(dirname $0)
-BOX=$(cd ${ROOT} && cabal exec bash -- -c set | grep GHC_PACKAGE_PATH)
-
-if ! [ $# -gt 0 ]; then
-    echo "Usage: $0 <command>"
-fi
-
-env ${BOX} "$@"
+ROOT=${PWD}
+HSENV=$(dirname $0)/hsenv
+while [[ "$ROOT" != / ]]; do
+    if [[ -e "${ROOT}/cabal.sandbox.config" ]] ; then
+	CONFIG=$(${HSENV} ${ROOT})
+	exec env ${CONFIG} "$@"
+    fi
+    ROOT=$(dirname $ROOT)
+done
+exit 1
